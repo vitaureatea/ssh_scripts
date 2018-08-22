@@ -1,0 +1,33 @@
+# ipset 安装
+yum install ipset -y
+
+#创建配置文件
+touch /etc/sysconfig/ipset
+
+#启动服务
+service ipset start
+
+# ipset创建set
+ipset create cdn hash:net
+
+# ipset给set添加ip
+ipset add cdn 172.16.0.0/16
+
+
+#保存
+service ipset save
+service ipset restart
+
+
+# 查看ipset规则
+ipset list
+ipset list cdn
+
+# 增加iptables规则
+-A INPUT -p tcp -m set --match-set cdn src --destination-port 443 -j ACCEPT
+
+# 重启iptables
+service iptables restart
+
+http://bigsec.net/one/tool/ipset.html
+http://ipset.netfilter.org/
